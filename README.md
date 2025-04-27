@@ -1,4 +1,6 @@
-# Ecommerce API
+# Servcio API
+
+Servcio App - timebase service tracker
 
 This is the backend API for an Servcio App.
 
