@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"ecomprac/internal/models"
+	"servcio-api/internal/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

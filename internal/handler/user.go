@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"ecomprac/internal/auth"
-	"ecomprac/internal/models"
 	"net/http"
+	"servcio-api/internal/auth"
+	"servcio-api/internal/models"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

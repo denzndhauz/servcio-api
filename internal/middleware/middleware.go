@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"ecomprac/internal/auth"
+	"servcio-api/internal/auth"
 
 	"github.com/gin-gonic/gin"
 )

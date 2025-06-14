@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"ecomprac/internal/models"
+	"servcio-api/internal/models"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

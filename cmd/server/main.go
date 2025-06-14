@@ -1,10 +1,10 @@
 package main
 
 import (
-	"ecomprac/internal/config"
-	"ecomprac/internal/database"
-	"ecomprac/internal/handler"
-	"ecomprac/internal/middleware"
+	"servcio-api/internal/config"
+	"servcio-api/internal/database"
+	"servcio-api/internal/handler"
+	"servcio-api/internal/middleware"
 
 	"github.com/gin-gonic/gin"
 )
