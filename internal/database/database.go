@@ -38,9 +38,8 @@ func Connect() *gorm.DB {
 	// Auto-migrate all models
 	err = db.AutoMigrate(
 		&models.User{},
-		&models.Product{},
-		&models.Order{},
-		&models.OrderItem{},
+		&models.Service{},
+		&models.ServiceCategory{},
 	)
 	if err != nil {
 		log.Fatal("Failed to migrate database: ", err)

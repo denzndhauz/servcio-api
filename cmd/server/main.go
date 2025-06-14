@@ -20,9 +20,8 @@ func main() {
 	auth := router.Group("/")
 	auth.Use(middleware.AuthMiddleware())
 	{
-		auth.POST("/products", handler.CreateProduct(db))
-		auth.GET("/products", handler.ListProducts(db))
-		auth.POST("/orders", handler.CreateOrder(db))
+		auth.POST("/services", handler.CreateService(db))
+		auth.GET("/services", handler.ListServices(db))
 	}
 
 	router.Run(":8080")
