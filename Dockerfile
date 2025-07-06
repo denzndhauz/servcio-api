@@ -1,5 +1,5 @@
 # Dockerfile for Ecommerce API
-FROM golang:1.23.0-alpine3.18
+FROM golang:1.24
 
 WORKDIR /app
 

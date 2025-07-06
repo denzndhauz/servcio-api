@@ -17,7 +17,7 @@ func CreateService(db *gorm.DB) gin.HandlerFunc {
 			Description *string `json:"description" binding:"required,min=1"`
 			Duration    int     `json:"duration" binding:"required,min=1"` // in minutes
 			Price       float64 `json:"price" binding:"required,min=0"`
-			// CategoryID  string  `json:"categoryId" binding:"required,uuid"`
+			CategoryID  string  `json:"categoryId" binding:"required,uuid"`
 		}
 
 		if err := c.ShouldBindJSON(&input); err != nil {
@@ -27,16 +27,16 @@ func CreateService(db *gorm.DB) gin.HandlerFunc {
 
 		tx := db.Begin() // Start transaction
 
-		// var category models.ServiceCategory
-		// if err := tx.First(&category, input.CategoryID).Error; err != nil {
-		// 	tx.Rollback()
-		// 	c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
-		// 	return
-		// }
+		var category models.ServiceCategory
+		if err := tx.First(&category, input.CategoryID).Error; err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
+			return
+		}
 
 		// Check if the service already exists
 		var existingService models.Service
-		if err := tx.Where("LOWER(name) = ?", strings.ToLower(input.Name)).First(&existingService).Error; err == nil {
+		if err := tx.Where("LOWER(name) = ? AND categoryId = ?", strings.ToLower(input.Name), input.CategoryID).First(&existingService).Error; err == nil {
 			tx.Rollback()
 			c.JSON(http.StatusConflict, gin.H{"error": "Service already exists"})
 			return
@@ -46,13 +46,15 @@ func CreateService(db *gorm.DB) gin.HandlerFunc {
 			Name:        input.Name,
 			Description: input.Description,
 			Duration:    input.Duration,
-			// CategoryID:  category.ID,
-			Price: input.Price,
+			CategoryID:  category.ID,
+			Price:       input.Price,
+			Providers:   []models.ServiceProvider{}, // Initialize with empty slice
+			Bookings:    []models.Booking{},         // Initialize with empty slice
 		}
 
 		if err := tx.Create(&service).Error; err != nil {
 			tx.Rollback()
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create service"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create service: " + err.Error()})
 			return
 		}
 	}
