@@ -40,6 +40,8 @@ func Connect() *gorm.DB {
 		&models.User{},
 		&models.Service{},
 		&models.ServiceCategory{},
+		&models.Schedule{},
+		&models.Customer{},
 	)
 	if err != nil {
 		log.Fatal("Failed to migrate database: ", err)

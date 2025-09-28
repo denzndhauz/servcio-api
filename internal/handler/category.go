@@ -46,7 +46,7 @@ func CreateCategory(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func GetCategories(db *gorm.DB) gin.HandlerFunc {
+func ListCategories(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var categories []models.ServiceCategory
 		if err := db.Find(&categories).Error; err != nil {

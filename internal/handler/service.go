@@ -25,31 +25,34 @@ func CreateService(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		tx := db.Begin() // Start transaction
-
 		var category models.ServiceCategory
-		if err := tx.First(&category, input.CategoryID).Error; err != nil {
-			tx.Rollback()
-			c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
+		if err := db.Where("id = ?", input.CategoryID).First(&category).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				db.Rollback()
+				c.JSON(http.StatusNotFound, gin.H{"error": "Category not found"})
+				return
+			}
+			db.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch category"})
 			return
 		}
 
 		// Check if the service already exists
 		var existingService models.Service
-		if err := tx.Where("LOWER(name) = ? AND categoryId = ?", strings.ToLower(input.Name), input.CategoryID).First(&existingService).Error; err == nil {
-			tx.Rollback()
+		if err := db.Where("LOWER(name) = ? AND categoryId = ?", strings.ToLower(input.Name), input.CategoryID).First(&existingService).Error; err == nil {
+			db.Rollback()
 			c.JSON(http.StatusConflict, gin.H{"error": "Service already exists"})
 			return
 		}
+
+		tx := db.Begin() // Start transaction
 
 		service := models.Service{
 			Name:        input.Name,
 			Description: input.Description,
 			Duration:    input.Duration,
 			CategoryID:  category.ID,
-			Price:       input.Price,
-			Providers:   []models.ServiceProvider{}, // Initialize with empty slice
-			Bookings:    []models.Booking{},         // Initialize with empty slice
+			Price:       input.Price, // Initialize with empty slice
 		}
 
 		if err := tx.Create(&service).Error; err != nil {
@@ -57,6 +60,9 @@ func CreateService(db *gorm.DB) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create service: " + err.Error()})
 			return
 		}
+
+		tx.Commit()
+		c.JSON(http.StatusCreated, service)
 	}
 }
 

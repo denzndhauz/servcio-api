@@ -22,8 +22,12 @@ func main() {
 	{
 		auth.POST("/services", handler.CreateService(db))
 		auth.GET("/services", handler.ListServices(db))
+
 		auth.POST("/categories", handler.CreateCategory(db))
-		auth.GET("/categories", handler.ListServices(db))
+		auth.GET("/categories", handler.ListCategories(db))
+
+		auth.POST("/providers", handler.CreateServiceProvider(db))
+		auth.GET("/providers", handler.ListServiceProviders(db))
 	}
 
 	router.Run(":8080")
